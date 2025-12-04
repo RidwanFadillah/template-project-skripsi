@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # Kita pakai PostgreSQL karena sangat handal untuk Data Analysis
+  db:
+    image: postgres:15-alpine
+    container_name: skripsi_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: skripsi_data
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  # Opsional: Adminer (Interface Web buat lihat isi Database, mirip PHPMyAdmin)
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"
+
+  server:
+    build: ./backend
+    container_name: skripsi_server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+
+  client:
+    build: ./frontend
+    container_name: skripsi_client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Supaya folder node_modules dalam docker aman
+    stdin_open: true      # Supaya tidak langsung exit
+    tty: true
+
+volumes:
+  db_data:
