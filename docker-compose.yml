@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-  # Kita pakai PostgreSQL karena sangat handal untuk Data Analysis
   db:
     image: postgres:15-alpine
     container_name: skripsi_db
@@ -15,7 +14,6 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  # Opsional: Adminer (Interface Web buat lihat isi Database, mirip PHPMyAdmin)
   adminer:
     image: adminer
     restart: always
@@ -39,8 +37,8 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
-      - /app/node_modules # Supaya folder node_modules dalam docker aman
-    stdin_open: true      # Supaya tidak langsung exit
+      - /app/node_modules 
+    stdin_open: true      
     tty: true
 
 volumes:
